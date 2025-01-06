@@ -1,31 +1,34 @@
-name: Deploy to Server on Push to Master
+name: Deploy to Server
 
 on:
   push:
     branches:
-      - master  # Trigger the action when there is a push to the 'master' branch
+      - master
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest  # Runs the job on the latest Ubuntu image
-
+    runs-on: ubuntu-latest
+    
     steps:
-    # Step 1: Check out the code from the repository
-    - name: Checkout code
-      uses: actions/checkout@v2
+      # Step 1: Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    # Step 2: Set up SSH for deployment (use your private SSH key here)
-    - name: Set up SSH
-      uses: webfactory/ssh-agent@v0.5.3
-      with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # Store your private key in GitHub Secrets
+      # Step 2: Set up SSH and authenticate with your server
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 34.93.216.55 >> ~/.ssh/known_hosts
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
-    # Step 3: Run deployment script
-    - name: Deploy to server
-      run: |
-        ssh -o StrictHostKeyChecking=no maruthiwork0009@34.93.216.55 << 'EOF'
-          # Replace the following with your actual deployment commands
-          cd /var/www/html
-          git pull origin master  # Pull the latest changes from the master branch
-          # Any additional commands you need for deployment (e.g., restarting services, installing dependencies)
-        EOF
+      # Step 3: SSH into the server and deploy the code
+      - name: Deploy to Server
+        run: |
+          ssh -o StrictHostKeyChecking=no maruthiwork0009@34.93.216.55 << 'EOF'
+            cd /var/www/html
+            git pull origin master  # Pull the latest changes from the master branch
+            # Any additional commands you need for deployment (e.g., restarting services, installing dependencies)
+          EOF
