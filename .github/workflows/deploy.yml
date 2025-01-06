@@ -1,4 +1,4 @@
-name: Deploy to Server
+name: Deploy to Server whenever push on master
 
 on:
   push:
