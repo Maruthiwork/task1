@@ -21,6 +21,6 @@ jobs:
           PORT: 80
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Deploy Code
-        run: |
-          ssh -o StrictHostKeyChecking=no maruthiwork0009@34.93.216.55 'cd /path/to/your/project && git pull'
+    #  - name: Deploy Code
+      #  run: |
+       #   ssh -o StrictHostKeyChecking=no maruthiwork0009@34.93.216.55 'cd /path/to/your/project && git pull'
