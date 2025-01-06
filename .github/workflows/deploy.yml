@@ -22,8 +22,7 @@ jobs:
 
     # Step 3: Run deployment script
     - name: Deploy to server
-      run: |
-      ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout ${{ secrets.MASTER_BRANCH }} && git pull && exit"
+      run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout ${{ secrets.MASTER_BRANCH }} && git pull && exit"
        # ssh -o StrictHostKeyChecking=no maruthiwork0009@34.93.216.55 << 'EOF'
           # Replace the following with your actual deployment commands
          # cd /var/www/html
