@@ -20,4 +20,4 @@ jobs:
 
       - name: Deploy Code
         run: |
-          ssh maruthiwork0009@34.93.216.55 'cd /path/to/your/project && git pull'
+          ssh -o StrictHostKeyChecking=no maruthiwork0009@34.93.216.55 'cd /path/to/your/project && git pull'
