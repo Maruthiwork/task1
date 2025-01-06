@@ -20,7 +20,7 @@ jobs:
           username: ${{secrets.SERVER_USER}}
           PORT: 80
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          scripts: 'cd /var/www/html/ && mkdir maruthi'
+          scripts: 'cd /var/www/html/ && sudo mkdir maruthi'
 
     #  - name: Deploy Code
       #  run: |
