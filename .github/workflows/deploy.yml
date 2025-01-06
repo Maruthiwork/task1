@@ -1,26 +1,21 @@
 name: Deploy on push to master
-
 on:
   push:
     branches:
       - master
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
-
       - name: Set Up SSH
         uses: webfactory/ssh-agent@v0.5.2
         with:
-          host: ${{secrets.SSH_HOST}}
-          username: ${{secrets.SERVER_USER}}
-          PORT: 80
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          scripts: 'cd /var/www/html/ && sudo mkdir maruthi'
+      - name: Deploy to Server
+        run: |
+          ssh -o StrictHostKeyChecking=no -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd /var/www/html/ && sudo mkdir maruthi"
 
     #  - name: Deploy Code
       #  run: |
