@@ -16,6 +16,9 @@ jobs:
       - name: Set Up SSH
         uses: webfactory/ssh-agent@v0.5.2
         with:
+          host: ${{secrets.SSH_HOST}}
+          username: ${{secrets.SERVER_USER)
+          PORT: 80
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy Code
