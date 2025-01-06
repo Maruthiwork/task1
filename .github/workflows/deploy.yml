@@ -26,9 +26,9 @@ jobs:
 
       # Step 3: SSH into the server and deploy the code
       - name: Deploy to Server
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout ${{ secrets.MASTER_BRANCH }} && git pull && exit"
-          #ssh -o StrictHostKeyChecking=no root@34.93.216.55 << 'EOF'
-            #cd /var/www/html
-            #git pull origin master  # Pull the latest changes from the master branch
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            cd /var/www/html
+            git pull origin master  # Pull the latest changes from the master branch
             # Any additional commands you need for deployment (e.g., restarting services, installing dependencies)
           EOF
