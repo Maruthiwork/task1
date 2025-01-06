@@ -27,7 +27,7 @@ jobs:
       - name: Deploy Application
         run: |
           # Navigate to the web directory and make sure it's ready
-          ssh -o StrictHostKeyChecking=no -p 22 ${{ secrets.SERVER_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no  << 'EOF'
             cd /var/www/html/
             sudo mkdir -p maruthi || echo "Directory exists"
             cd maruthi
