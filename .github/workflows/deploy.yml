@@ -1,22 +1,41 @@
 name: Deploy on push to master
+
 on:
   push:
     branches:
       - master
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
+      # Step 1: Checkout the latest code from the repository
       - name: Checkout Code
         uses: actions/checkout@v2
+
+      # Step 2: Set up SSH connection
       - name: Set Up SSH
         uses: webfactory/ssh-agent@v0.5.2
         with:
-          host: ${{secrets.SSH_HOST}}
-          username: ${{secrets.SERVER_USER}}
-          PORT: 22
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          port: 22
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          scripts: 'cd /var/www/html/ && sudo mkdir maruthi'
+
+      # Step 3: Deploy the code (example steps)
+      - name: Deploy Application
+        run: |
+          # Navigate to the web directory and make sure it's ready
+          ssh -o StrictHostKeyChecking=no -p 22 ${{ secrets.SERVER_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            cd /var/www/html/
+            sudo mkdir -p maruthi || echo "Directory exists"
+            cd maruthi
+            git pull origin master || echo "Git pull failed"
+            # Any additional deployment steps (e.g., installing dependencies, restarting services)
+            sudo systemctl restart httpd  # Restart Apache if needed
+          EOF
+
 
     #  - name: Deploy Code
       #  run: |
