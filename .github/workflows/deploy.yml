@@ -23,9 +23,10 @@ jobs:
     # Step 3: Run deployment script
     - name: Deploy to server
       run: |
-        ssh -o StrictHostKeyChecking=no maruthiwork0009@34.93.216.55 << 'EOF'
+      ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout ${{ secrets.MASTER_BRANCH }} && git pull && exit"
+       # ssh -o StrictHostKeyChecking=no maruthiwork0009@34.93.216.55 << 'EOF'
           # Replace the following with your actual deployment commands
-          cd /var/www/html
-          git pull origin master  # Pull the latest changes from the master branch
+         # cd /var/www/html
+         # git pull origin master  # Pull the latest changes from the master branch
           # Any additional commands you need for deployment (e.g., restarting services, installing dependencies)
-        EOF
+        #EOF
