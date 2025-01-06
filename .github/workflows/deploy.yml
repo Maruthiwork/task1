@@ -27,14 +27,14 @@ jobs:
       - name: Deploy Application
         run: |
           # Navigate to the web directory and make sure it's ready
-          ssh -o StrictHostKeyChecking=no  << 'EOF'
+        args:
             cd /var/www/html/
             sudo mkdir -p maruthi || echo "Directory exists"
             cd maruthi
-            git pull origin master || echo "Git pull failed"
+            git pull origin master || echo "Git pull failed"  && sudo systemctl restart httpd  # Restart Apache if needed
+
             # Any additional deployment steps (e.g., installing dependencies, restarting services)
-            sudo systemctl restart httpd  # Restart Apache if needed
-          EOF
+                            EOF
 
 
     #  - name: Deploy Code
