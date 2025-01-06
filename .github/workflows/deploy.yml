@@ -1,0 +1,31 @@
+name: Deploy to Server on Push to Master
+
+on:
+  push:
+    branches:
+      - master  # Trigger the action when there is a push to the 'master' branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # Runs the job on the latest Ubuntu image
+
+    steps:
+    # Step 1: Check out the code from the repository
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    # Step 2: Set up SSH for deployment (use your private SSH key here)
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # Store your private key in GitHub Secrets
+
+    # Step 3: Run deployment script
+    - name: Deploy to server
+      run: |
+        ssh -o StrictHostKeyChecking=no maruthiwork0009@34.93.216.55 << 'EOF'
+          # Replace the following with your actual deployment commands
+          cd /var/www/html
+          git pull origin master  # Pull the latest changes from the master branch
+          # Any additional commands you need for deployment (e.g., restarting services, installing dependencies)
+        EOF
