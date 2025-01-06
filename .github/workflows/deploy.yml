@@ -20,6 +20,7 @@ jobs:
           username: ${{secrets.SERVER_USER}}
           PORT: 80
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          scripts: 'cd /var/www/html/ && git pull'
 
     #  - name: Deploy Code
       #  run: |
