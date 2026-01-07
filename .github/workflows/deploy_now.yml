@@ -2,7 +2,7 @@ name: Deploy via rsync to AWS EC2
 
 on:
   push:
-    branches: ["task1"]
+    branches: ["maruthi"]
 
 jobs:
   deploy:
