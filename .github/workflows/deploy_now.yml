@@ -1,30 +1,23 @@
-name: Deploy via rsync to AWS EC2
+name: Deploy on push to master
 
 on:
   push:
-    branches: ["maruthi"]
+    branches:
+      - maruthi
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
-      - name: Set up SSH
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY_1 }}
+
+      - name: Deploy files
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.GITHUB_ACTIONS_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-
-      - name: Deploy files with rsync
-        run: |
-          rsync -az --delete \
-            --exclude ".git" \
-            --exclude "node_modules" \
-            --exclude ".env" \
-            -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" \
-            ./  ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/var/lib/maruthi/
-
-      
+          rsync -avz --delete ./ \
+          ${{ secrets.SERVER_USER }}@${{ secrets.SSH_HOST_1 }}:/home/ubuntu/maruthi
