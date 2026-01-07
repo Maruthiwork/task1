@@ -20,5 +20,5 @@ jobs:
       - name: Deploy files
         run: |
           rsync -avz --delete \
-    -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" \
-    ./ ${{ secrets.SERVER_USER }}@${{ secrets.SSH_HOST }}:/var/www/html
+           -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" \
+            ./ ${{ secrets.SERVER_USER }}@${{ secrets.SSH_HOST }}:/var/www/html
