@@ -25,10 +25,6 @@ jobs:
             --exclude "node_modules" \
             --exclude ".env" \
             -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" \
-            ./  ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:${{ secrets.APP_PATH }}
+            ./  ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/var/lib/maruthi/
 
-      - name: Restart app (optional)
-        run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa \
-            ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} \
-            "cd ${{ secrets.APP_PATH }} && pm2 restart all || true"
+      
