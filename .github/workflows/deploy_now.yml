@@ -19,5 +19,6 @@ jobs:
 
       - name: Deploy files
         run: |
-          rsync -avz --delete ./ \
-          ${{ secrets.SERVER_USER }}@${{ secrets.SSH_HOST_1 }}:/home/ubuntu/maruthi
+          rsync -avz --delete \
+    -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" \
+    ./ ${{ secrets.SERVER_USER }}@${{ secrets.SSH_HOST }}:/var/www/html
