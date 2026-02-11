@@ -1,31 +1,66 @@
-name: Deploy to Server on Push to Master
+name: Deploy Frontend-A Demo
 
 on:
   push:
-    branches:
-      - master  # Trigger the action when there is a push to the 'master' branch
+    branches: beanstalk-demo
+
+env:
+  AWS_REGION: ap-south-1
+  ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+  ECR: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com
+  VERSION: ${{ github.sha }}
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest  # Runs the job on the latest Ubuntu image
+    runs-on: ubuntu-latest
 
     steps:
-    # Step 1: Check out the code from the repository
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-    # Step 2: Set up SSH for deployment (use your private SSH key here)
-    - name: Set up SSH
-      uses: webfactory/ssh-agent@v0.5.3
-      with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # Store your private key in GitHub Secrets
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
-    # Step 3: Run deployment script
-    - name: Deploy to server
-      run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout ${{ secrets.MASTER_BRANCH }} && git pull && exit"
-       # ssh -o StrictHostKeyChecking=no maruthiwork0009@34.93.216.55 << 'EOF'
-          # Replace the following with your actual deployment commands
-         # cd /var/www/html
-         # git pull origin master  # Pull the latest changes from the master branch
-          # Any additional commands you need for deployment (e.g., restarting services, installing dependencies)
-        #EOF
+      - name: Login ECR
+        run: |
+          aws ecr get-login-password \
+          | docker login --username AWS --password-stdin $ECR
+
+      - name: Build admin
+        run: |
+          docker build -t $ECR/fe-admin:$VERSION services/fe-admin
+          docker push $ECR/fe-admin:$VERSION
+
+      - name: Build design
+        run: |
+          docker build -t $ECR/fe-design:$VERSION services/fe-design
+          docker push $ECR/fe-design:$VERSION
+
+      - name: Inject tag
+        run: |
+          sed -i "s/\${TAG}/$VERSION/g" environments/frontend-a/docker-compose.yml
+
+      - name: Zip
+        run: |
+          cd environments/frontend-a
+          zip -r app.zip .
+
+      - name: Upload bundle
+        run: |
+          aws s3 cp environments/frontend-a/app.zip \
+          s3://elasticbeanstalk-$AWS_REGION-$ACCOUNT_ID/frontend-a-$VERSION.zip
+
+      - name: Create version
+        run: |
+          aws elasticbeanstalk create-application-version \
+            --application-name frontend-app \
+            --version-label $VERSION \
+            --source-bundle S3Bucket=elasticbeanstalk-$AWS_REGION-$ACCOUNT_ID,S3Key=frontend-a-$VERSION.zip
+
+      - name: Deploy
+        run: |
+          aws elasticbeanstalk update-environment \
+            --environment-name frontend-a-env \
+            --version-label $VERSION
