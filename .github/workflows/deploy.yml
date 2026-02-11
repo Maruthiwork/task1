@@ -2,7 +2,7 @@ name: Deploy Frontend-A Demo
 
 on:
   push:
-    branches: beanstalk-demo
+    branches: develop-live
 
 env:
   AWS_REGION: ap-south-1
