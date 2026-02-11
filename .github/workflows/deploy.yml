@@ -62,5 +62,5 @@ jobs:
       - name: Deploy
         run: |
           aws elasticbeanstalk update-environment \
-            --environment-name frontend-a-env \
+            --environment-name Frontend-app-env \
             --version-label $VERSION
