@@ -1,0 +1,13 @@
+services:
+  admin:
+    image: 732772501276.dkr.ecr.ap-south-1.amazonaws.com/fe-admin:${TAG}
+
+  design:
+    image: 732772501276.dkr.ecr.ap-south-1.amazonaws.com/fe-design:${TAG}
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
